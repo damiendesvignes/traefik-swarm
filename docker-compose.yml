@@ -1,0 +1,26 @@
+version: '3.2'
+
+services:
+  traefik:
+    image: traefik
+    networks:
+      - proxy
+      # If you use prometheus
+      - monitoring
+    ports:
+      - "80:80"
+      - "8080:8080"
+    command: --logLevel=ERROR
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./files/traefik.toml:/traefik.toml
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  proxy:
+    external: true
+  monitoring:
+    external: true
